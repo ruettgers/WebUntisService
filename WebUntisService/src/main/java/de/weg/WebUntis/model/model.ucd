@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<editmodel:ClassDiagramEditModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:editmodel="editmodel.xmi" xmlns:options="options.xmi" name="model" size="1239,641" id="de.weg.WebUntis.model" metadata="uml2-1.0" initialized="true" tag="1000" key="32303037303533312D3130303020576562556E7469732D496D706F72744B6F6E7665727465722F52FC747467657273">
+  <children xsi:type="editmodel:ClassEditModel" name="Schueler" location="50,50" size="161,571" id="de.weg.WebUntis.model/Schueler" runTimeClassModel="Benutzergruppe,EMail,tOKEN,Klasse,Geburtsdatum,Aktiv,Vorname,toString(),SchluesselExtern,Familienname,Geschlecht,Austrittsdatum,Sprache,equals(Ljava.lang.Object;),Attestpflicht,compareTo(Lde.weg.WebUntis.model.Schueler;),Volljaehrig,Schueler(Ljava.lang.String;Ljava.lang.String;Ljava.lang.String;),Kurzname,Telefonnummer,Passwort,Text,Eintrittsdatum,SchluesselIntern,Strasse,Stadt,Schulpflicht,isValid(),PLZ">
+    <children xsi:type="editmodel:CompartmentEditModel" size="138,432">
+      <children xsi:type="editmodel:AttributeEditModel" name="Aktiv" id="de.weg.WebUntis.model/Schueler#Aktiv"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="Attestpflicht" id="de.weg.WebUntis.model/Schueler#Attestpflicht"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="Austrittsdatum" id="de.weg.WebUntis.model/Schueler#Austrittsdatum"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="Benutzergruppe" id="de.weg.WebUntis.model/Schueler#Benutzergruppe"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="EMail" id="de.weg.WebUntis.model/Schueler#EMail"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="Eintrittsdatum" id="de.weg.WebUntis.model/Schueler#Eintrittsdatum"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="Familienname" id="de.weg.WebUntis.model/Schueler#Familienname"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="Geburtsdatum" id="de.weg.WebUntis.model/Schueler#Geburtsdatum"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="Geschlecht" id="de.weg.WebUntis.model/Schueler#Geschlecht"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="Klasse" id="de.weg.WebUntis.model/Schueler#Klasse"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="Kurzname" id="de.weg.WebUntis.model/Schueler#Kurzname"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="PLZ" id="de.weg.WebUntis.model/Schueler#PLZ"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="Passwort" id="de.weg.WebUntis.model/Schueler#Passwort"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="SchluesselExtern" id="de.weg.WebUntis.model/Schueler#SchluesselExtern"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="SchluesselIntern" id="de.weg.WebUntis.model/Schueler#SchluesselIntern"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="Schulpflicht" id="de.weg.WebUntis.model/Schueler#Schulpflicht"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="Sprache" id="de.weg.WebUntis.model/Schueler#Sprache"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="Stadt" id="de.weg.WebUntis.model/Schueler#Stadt"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="Strasse" id="de.weg.WebUntis.model/Schueler#Strasse"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="Telefonnummer" id="de.weg.WebUntis.model/Schueler#Telefonnummer"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="Text" id="de.weg.WebUntis.model/Schueler#Text"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="Volljaehrig" id="de.weg.WebUntis.model/Schueler#Volljaehrig"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="Vorname" id="de.weg.WebUntis.model/Schueler#Vorname"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="tOKEN" id="de.weg.WebUntis.model/Schueler#tOKEN"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="83,90">
+      <children xsi:type="editmodel:MethodEditModel" name="Schueler" id="de.weg.WebUntis.model/Schueler#Schueler(Ljava.lang.String;Ljava.lang.String;Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="compareTo" id="de.weg.WebUntis.model/Schueler#compareTo(Lde.weg.WebUntis.model.Schueler;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="equals" id="de.weg.WebUntis.model/Schueler#equals(Ljava.lang.Object;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="isValid" id="de.weg.WebUntis.model/Schueler#isValid()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="toString" id="de.weg.WebUntis.model/Schueler#toString()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <diagramOptions xsi:type="options:ClassDiagramOptions" level="-1" showScope="InPackage" properties="wireOptions=1;Product=eUML2"/>
+  <boardSetting snapToGeometry="true" gridEnabled="true" gridSpacing="15,15" gridOrigin="0,0" rulerUnit="pixel" gridVisibility="false">
+    <leftRuler/>
+    <topRuler/>
+  </boardSetting>
+  <classDiagramPreferences xsi:type="editmodel:UMLClassDiagramPreference" showPopupBars="true" showConnectionHandles="true" attributeSorter="Natural" methodSorter="Natural" showClassStereotype="true" showPackageStereotype="true" showDependencyStereotype="true" showInterfaceStereotype="true" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+</editmodel:ClassDiagramEditModel>
