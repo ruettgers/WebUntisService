@@ -5,6 +5,7 @@ import java.util.GregorianCalendar;
 import java.util.logging.Logger;
 
 import de.weg.WebUntis.converter.ausdrucke.PasswordGenerator;
+import de.weg.WebUntis.db.UsersCache;
 import de.weg.WebUntis.resources.Helper;
 
 /**
@@ -15,7 +16,6 @@ public class Schueler implements Comparable<Schueler> {
 	public static final Logger log = Logger.getLogger(Schueler.class.getName());
 
 	public static String TOKEN = "Schueler"; //$NON-NLS-1$
-
 
 	public int compareTo(Schueler obj) {
 		int cmp;
@@ -88,7 +88,7 @@ public class Schueler implements Comparable<Schueler> {
 		this.setBenutzergruppe("Schüler");
 		this.setVolljaehrig(false);
 		this.setSchulpflicht(true);
-		
+
 	}
 
 	/**
@@ -98,19 +98,8 @@ public class Schueler implements Comparable<Schueler> {
 	 */
 	public void generateDependendValues() {
 		if (this.getKurzname() == null || this.getKurzname().isEmpty()) {
-			String kn = Helper.userNameGenerator(this.getFamilienname(),
-					this.getVorname());
-			if (!Helper.userNameIsValid(kn))
-			{
-				log.warning("ACHTUNG: Benutzername " +kn +" enthält unerlaubte Zeichen. Regel aufstellen.");
-				log.warning("ACHTUNG: Benutzername-Alt " +kn +" entferne Sonderzeichen.");
-				String knneu = Helper.sonderzeichenNichtGefundenEntfernen(kn);
-				log.warning("ACHTUNG: Benutzername-Neu " +knneu +" entferne Sonderzeichen.");
-				this.setBemerkung(this.getBemerkung()+"Name mit Sonderzeichen: mit:"+kn+" ohne:"+knneu);
-				kn = knneu;
-				
-			}			
-			this.setKurzname(kn);
+			generiereBenutzername();
+
 		}
 		if (this.getPasswort() == null || this.getPasswort().isEmpty()) {
 			this.setPasswort(PasswordGenerator.generate(8,
@@ -118,15 +107,69 @@ public class Schueler implements Comparable<Schueler> {
 		}
 	}
 
+	private void generiereBenutzername() {
+		
+		// Standardversuch
+		String kn = Helper.userNameGenerator(this.getFamilienname(),
+				this.getVorname());
+		
+		// Prüfe auf Sonderzeichen, leerZeichen und so weiter:
+		if (!Helper.userNameIsValid(kn)) {
+			log.warning("ACHTUNG: Benutzername " + kn
+					+ " enthält unerlaubte Zeichen. Regel aufstellen.");
+			log.warning("ACHTUNG: Benutzername-Alt " + kn
+					+ " entferne Sonderzeichen.");
+			String knneu = Helper.sonderzeichenNichtGefundenEntfernen(kn);
+			log.warning("ACHTUNG: Benutzername-Neu " + knneu
+					+ " entferne Sonderzeichen.");
+
+			// Bemerkungsfeld setzen, dient der Kontrolle in der Excelliste
+			this.addBemerkung("Name mit Sonderzeichen: mit:" + kn + " ohne:"
+					+ knneu);
+			kn = knneu;
+
+		}
+		
+		// Prüfe, ob der Name schon verhanden ist und erzeuge gegebenefalls einen neuen Namen, diesen in den Namenscach einordnen für weitere folgende Versuche
+		int startExtension = 2;
+		int i = startExtension;
+		String nkn = kn;
+		UsersCache uc = UsersCache.getInstance();
+		while (uc.containsName(nkn))
+		{
+			nkn = kn + i;
+			i++;
+		}
+		if (i>startExtension)
+		{
+			this.addBemerkung("StandardName bereits vorhanden. Neuer Name:"+nkn);
+		}
+
+		uc.insertDummyName(nkn);
+
+		this.setKurzname(nkn);
+	}
+
+
 	private String bemerkung;
 
 	public void setBemerkung(String string) {
 		this.bemerkung = string;
-		
+
 	}
 
 	public String getBemerkung() {
 		return this.bemerkung;
+	}
+	private void addBemerkung(String neuerTeil) {
+		String bemerkung = this.getBemerkung();
+		if (bemerkung == null) {
+			bemerkung = "";
+		} else {
+			bemerkung = bemerkung + ":";
+		}
+		this.setBemerkung(bemerkung + neuerTeil);
+
 	}
 
 	/**
@@ -341,10 +384,8 @@ public class Schueler implements Comparable<Schueler> {
 		geburtsdatum.set(Calendar.MILLISECOND, 0);
 		this.geburtsdatum = geburtsdatum;
 		this.calculateVolljaehrig();
-		
 
 	}
-	
 
 	public void setGeburtsdatum(int tag, int monat, int jahr) {
 		Calendar c1 = Calendar.getInstance();
@@ -524,8 +565,7 @@ public class Schueler implements Comparable<Schueler> {
 		this.volljaehrig = volljaehrig;
 	}
 
-	
-	public int age () {
+	public int age() {
 		GregorianCalendar cal = new GregorianCalendar();
 		int y, d, a;
 
@@ -538,19 +578,15 @@ public class Schueler implements Comparable<Schueler> {
 		}
 		return (a);
 	}
-	
 
 	private void calculateVolljaehrig() {
-		
-		if (age()>=18)
-		{
-		 this.setVolljaehrig(true);
-		}
-		else
-		{
+
+		if (age() >= 18) {
+			this.setVolljaehrig(true);
+		} else {
 			this.setVolljaehrig(false);
 		}
-		
+
 	}
 
 	/**

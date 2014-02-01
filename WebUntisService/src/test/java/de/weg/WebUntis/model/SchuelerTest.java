@@ -10,6 +10,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import de.weg.WebUntis.resources.Helper;
+
 public class SchuelerTest {
 
 	@BeforeClass
@@ -28,6 +30,42 @@ public class SchuelerTest {
 	public void tearDown() throws Exception {
 	}
 
+	@Test
+	public final void testGenerateDependendValues() {
+		String fName = "Familienname";
+		String vName = "Vorname";
+		String standard = Helper.userNameGenerator(fName, vName);
+		int standardExtension = 2;
+		
+		Schueler s = new Schueler();
+		s.setFamilienname(fName);
+		s.setVorname(vName);
+				
+		s.generateDependendValues();
+		assertTrue("BenutzerName:"+s.getKurzname()+" ist Standard:"+standard,s.getKurzname().equals(standard));
+		assertTrue("Leere Bemerkung", s.getBemerkung()==null);
+		
+		s = new Schueler();
+		s.setFamilienname("Familienname");
+		s.setVorname("Vorname");
+
+		s.generateDependendValues();
+		assertFalse("BenutzerName:"+s.getKurzname()+" ist nicht Standard",s.getKurzname().equals(standard));
+		assertTrue("BenutzerName:"+s.getKurzname()+"  ist Standard mit Zahl",s.getKurzname().equals(standard+standardExtension));
+		assertFalse("Keine leere Bemerkung", s.getBemerkung()==null);
+		assertFalse("Keine leere Bemerkung", s.getBemerkung().isEmpty());
+
+		s = new Schueler();
+		s.setFamilienname("Familienname");
+		s.setVorname("Vorname");
+
+		s.generateDependendValues();
+		assertFalse("BenutzerName:"+s.getKurzname()+"  ist nicht Standard",s.getKurzname().equals(standard));
+		assertFalse("BenutzerName:"+s.getKurzname()+"  ist nicht Standard mit Zahl +",s.getKurzname().equals(standard+standardExtension));
+		assertTrue("BenutzerName:"+s.getKurzname()+"  ist Standard mit Zahl + + ",s.getKurzname().equals(standard+(standardExtension+1)));
+		
+		
+	}
 
 	@Test
 	public final void testCompareTo() {
