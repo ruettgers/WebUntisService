@@ -156,7 +156,7 @@ public class ExportZuPassword {
 		Schueler element = new Schueler();
 		String[] zeilendaten = zeile.split(";");
 
-		log.log(Level.INFO, "Extracting values");
+		log.log(Level.FINE, "Extracting values");
 		// durchlaufe die Zeile und extrahiere die relevanten zellen
 		String strValue;
 		// Familienname
@@ -305,7 +305,7 @@ public class ExportZuPassword {
 
 	private static void schreibeSchueler(Schueler sch, Document pdf)
 			throws IOException, DocumentException {
-		log.warning("Schueler daten schreiben");
+		log.fine("Schueler daten schreiben");
 	    Paragraph schueler = new Paragraph();
 	    schueler.add(new Paragraph("Benutzername:"+ sch.getKurzname(), benutzerFont));
 	    schueler.add(new Paragraph("Kennwort:"+ sch.getPasswort(), passwortFont));

@@ -15,8 +15,14 @@ public class BearbeiterSchueler extends AbstractBearbeiter implements
 
 	public void bearbeite(List<?> liste) {
 
+		
+		log.log(Level.INFO, "Liste umfasst "+liste.size());
+		int oki = 0;
+		int fehler =0;
 		for (Object obj : liste) {
+			
 			if (!(obj instanceof Schueler)) {
+				fehler++;
 				log.warning("Skipping list entry because: Schueler expected but found:"
 						+ obj);
 				continue;
@@ -24,18 +30,22 @@ public class BearbeiterSchueler extends AbstractBearbeiter implements
 
 			Schueler schueler = (Schueler) obj;
 			if (!schueler.isValid()) {
+				fehler++;
 				log.log(Level.WARNING, "Invalid Schueler:" + schueler);
-				log.log(Level.INFO,
-						"Invalid Schueler will not be handled further.");
-				log.log(Level.INFO,
-						"????????????????Maybe you want to remove schueler from list?????????.");
 				// TODO remove from list?
 				continue;
 			}
-			log.log(Level.INFO, "Generate dependend values");
+			oki++;
+			log.log(Level.FINE, "Generate dependend values");
 			schueler.generateDependendValues();
 
 		}
+		log.log(Level.INFO, "============================BearbeiterSchueler---BearbeiterSchueler======================================");
+		log.log(Level.INFO, "===============================================================================================");
+		log.log(Level.INFO, "Liste umfasst "+liste.size() +"davon error:"+fehler + " ok:"+oki);
+		log.log(Level.INFO, "===============================================================================================");
+		log.log(Level.INFO, "===============================================================================================");
+
 
 	}
 

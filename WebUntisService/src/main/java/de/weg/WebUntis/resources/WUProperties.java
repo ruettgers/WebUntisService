@@ -27,6 +27,8 @@ public class WUProperties extends Properties {
 	public static final String MappingArt = "MappingArt";
 //	public static final String TokenMappingFile = "TokenMappingFile";
 	public static final String PasswordFileNameName = "PasswordFileName";
+	public static final String ExportFileEncoding = "ExportFileEncoding";
+	public static final String SheetNummer = "SheetNummer";
 
 	// singleton instance
 	/**
@@ -89,6 +91,11 @@ public class WUProperties extends Properties {
 
 		String mappingArt = WUProperties.getInstance().getProperty(WUProperties.MappingArt);
 		p.put(WUProperties.MappingArt, mappingArt);
+		
+		String encoding = WUProperties.getInstance().getProperty(WUProperties.ExportFileEncoding);
+		p.put(WUProperties.ExportFileEncoding, encoding);
+		String sheetNoStr = WUProperties.getInstance().getProperty(WUProperties.SheetNummer);
+		p.put(WUProperties.SheetNummer, sheetNoStr);
 
 		
 		propertyList.add(p);

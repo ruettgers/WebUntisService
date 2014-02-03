@@ -479,8 +479,6 @@ public class Schueler implements Comparable<Schueler> {
 	 * @uml.property name="Klasse"
 	 */
 	public void setKlasse(String klasse) {
-		// TODO: nur erlaubt Klassen - prüfe gegen eine Liste von Klassen -
-		// konvertiere in WebUntis Klassen (ALias) gegenüber Sekretariatsklassen
 		this.klasse = klasse;
 	}
 

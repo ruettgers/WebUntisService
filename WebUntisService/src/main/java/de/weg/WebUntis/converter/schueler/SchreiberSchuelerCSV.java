@@ -2,8 +2,11 @@ package de.weg.WebUntis.converter.schueler;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -24,7 +27,7 @@ public class SchreiberSchuelerCSV extends AbstractSchreiber {
 	public void exportData(Properties einstellungen, List<?> data) {
 		try {
 			// prepare
-			BufferedWriter bw = erzeugeWriter(einstellungen);
+			Writer bw = erzeugeWriter(einstellungen);
 			
 			// export
 			// kopfzeile
@@ -42,9 +45,10 @@ public class SchreiberSchuelerCSV extends AbstractSchreiber {
 		}
 	}
 
-	protected BufferedWriter erzeugeWriter(Properties einstellungen) throws IOException {
+	protected Writer erzeugeWriter(Properties einstellungen) throws IOException {
 		String fileName = einstellungen.getProperty(WUProperties.ExportFileName);
 		File file = new File(fileName);
+		String encoding = einstellungen.getProperty(WUProperties.ExportFileEncoding);
 
 		log.info("File:open:" + file.getAbsolutePath());
 		file.delete();
@@ -54,35 +58,49 @@ public class SchreiberSchuelerCSV extends AbstractSchreiber {
 		
 		FileWriter fw = new FileWriter(file);
 		log.info("FileWriter ok");
-		BufferedWriter bw = new BufferedWriter(fw);
+		
+		
+		log.info("Prepare for encoding with "+encoding);
+		Writer bw  = new OutputStreamWriter(new FileOutputStream(file), encoding);
 		log.info("BufferedWriter ok" );
 
 		return bw;
 	}
 
-	private void schreibeDaten(BufferedWriter bw, List<?> data) throws IOException {
+	private void schreibeDaten(Writer bw, List<?> data) throws IOException {
 
 			// daten
+		    int c = 0;
+		    int e = 0;
 			for (Object obj : data)
 			{
+		
 				if (!(obj instanceof Schueler))
 				{
+					e++;
 					log.warning("Skipping listentry because: Schueler expected but found:"
 							+ obj);
 					continue;
 				}
+				c++;
 				schreibeSchueler((Schueler) obj, bw);
 				//Abschluss der Zeile
 				schreibeZeilenAbschluss(bw);
 
 
 			}
+			log.info("=====================================================================================================================================");
+			log.info("=====================================================================================================================================");
+			log.info("Liste umfasste:" + data.size()  + "-----------"+"Geschrieben Elemente:"+c+ "-----------"+"Fehlerhaft Elemente:"+e);
+			log.info("=====================================================================================================================================");
+			log.info("=====================================================================================================================================");
+
 
 	}
 
-	private void schreibeSchueler(Schueler sch, BufferedWriter bw)
+	private void schreibeSchueler(Schueler sch, Writer bw)
 			throws IOException {
-		log.warning("Schueler daten schreiben");
+		log.fine("Schueler daten schreiben");
 		
 		// Die einzelnen Werte in derselben Reiehnfolge wie die Headerdaten:
 //		SCHLUESSELEXTERN
@@ -132,7 +150,7 @@ public class SchreiberSchuelerCSV extends AbstractSchreiber {
 	 * @param strV
 	 * @throws IOException
 	 */
-	private void schreibeWert(BufferedWriter bw, String strV)
+	private void schreibeWert(Writer bw, String strV)
 			throws IOException {
 		if (strV==null)
 		{
@@ -148,8 +166,8 @@ public class SchreiberSchuelerCSV extends AbstractSchreiber {
 	 * @param bw
 	 * @throws IOException
 	 */
-	private void schreibeHeader(BufferedWriter bw) throws IOException {
-		log.warning("Header daten schreiben");
+	private void schreibeHeader(Writer bw) throws IOException {
+		log.fine("Header daten schreiben");
 		schreibeHeaderWert(bw, SpaltenToken.SchuelerNr );
 		schreibeHeaderWert(bw, SpaltenToken.Anmeldenamen);
 		schreibeHeaderWert(bw, SpaltenToken.Kennwort);
@@ -175,7 +193,7 @@ public class SchreiberSchuelerCSV extends AbstractSchreiber {
 
 	}
 
-	private void schreibeHeaderWert(BufferedWriter bw, SpaltenToken spaltenToken) throws IOException {
+	private void schreibeHeaderWert(Writer bw, SpaltenToken spaltenToken) throws IOException {
 		schreibeWert(bw,SpalteWU.getMapping().get(spaltenToken).getSpaltenName());
 		
 	}
@@ -184,7 +202,7 @@ public class SchreiberSchuelerCSV extends AbstractSchreiber {
 	 * @param bw
 	 * @throws IOException
 	 */
-	private void schreibeZeilenAbschluss(BufferedWriter bw) throws IOException {
+	private void schreibeZeilenAbschluss(Writer bw) throws IOException {
 		bw.append(LINE_SEPERATOR);
 	}
 

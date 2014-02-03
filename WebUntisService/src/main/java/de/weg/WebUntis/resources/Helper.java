@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
@@ -22,13 +23,10 @@ import de.weg.WebUntis.model.Schueler;
 public class Helper {
 	private static final Logger log = Logger.getLogger(Helper.class.getName());
 
-
 	public static final String EMPTY_STRING = "";
 	public static final String J = "J";
 	public static final String N = "N";
 
-
-	
 	public static final Locale ISP_LOCALE = Locale.GERMAN;
 	private static Collator collatorSecondary = Collator
 			.getInstance(ISP_LOCALE);
@@ -82,10 +80,10 @@ public class Helper {
 	}
 
 	final static String FIND_SONDERZEICHEN = "ÍÈË˚˙˘‚·‡ÓÌÏÙÛÚ˝Á …»€⁄Ÿ¬¡¿ŒÕÃ‘”“›«";
-	final static String REPLACE_SONDERZEICHEN[] = {
-		"e","e","e", "u","u","u", "a","a","a", "i","i","i", "o","o","o", "y","c",
-		"E","E","E", "U","U","U", "A","A","A", "I","I","I", "O","O","O", "Y","C" 
-		};
+	final static String REPLACE_SONDERZEICHEN[] = { "e", "e", "e", "u", "u",
+			"u", "a", "a", "a", "i", "i", "i", "o", "o", "o", "y", "c", "E",
+			"E", "E", "U", "U", "U", "A", "A", "A", "I", "I", "I", "O", "O",
+			"O", "Y", "C" };
 
 	public static final String sonderzeichenErsetzen(final String str) {
 		final Pattern pattern = Pattern.compile("([" + FIND_SONDERZEICHEN
@@ -106,7 +104,8 @@ public class Helper {
 		return result;
 	}
 
-	final static String FIND_ENTFERNEN = "-"+"_"+" "+"/"+","+"."+";"+":"+"¥"+"`"+"^";
+	final static String FIND_ENTFERNEN = "-" + "_" + " " + "/" + "," + "."
+			+ ";" + ":" + "¥" + "`" + "^";
 
 	public static final String sonderzeichenEntfernen(final String str) {
 		final Pattern pattern = Pattern.compile("([" + FIND_ENTFERNEN + "])");
@@ -124,8 +123,10 @@ public class Helper {
 		return result;
 	}
 
-	final static String FIND_ERLAUBT = "a-zA-Z";	
-	public static final String sonderzeichenNichtGefundenEntfernen(final String str) {
+	final static String FIND_ERLAUBT = "a-zA-Z";
+
+	public static final String sonderzeichenNichtGefundenEntfernen(
+			final String str) {
 		final Pattern pattern = Pattern.compile("([^" + FIND_ERLAUBT + "])");
 
 		String result = str;
@@ -142,12 +143,12 @@ public class Helper {
 	}
 
 	public static final String userNamePreparator(final String string) {
-		return  sonderzeichenErsetzen(umlauteErsetzen(sonderzeichenEntfernen(string)));
+		return sonderzeichenErsetzen(umlauteErsetzen(sonderzeichenEntfernen(string)));
 	}
 
 	// keine Sonderzeichen. nur ascii erlaubt
 	public static boolean userNameIsValid(String un) {
-		 return un.matches("[a-zA-Z]*");
+		return un.matches("[a-zA-Z]*");
 	}
 
 	public static final int AnzahlBuchstabenImNachnamen = 3;
@@ -174,12 +175,10 @@ public class Helper {
 	 */
 	public static final DateFormat dfDateDD_MM_YYYY = new SimpleDateFormat(
 			dfDate_DD_MM_YYYY_PATTERN);
-	
-	
+
 	public static final String dfDate_DD_MM_YYYY_HH_MM_PATTERN = "dd.MM.yyyy HH:MM";
 	public static final DateFormat dfDateDD_MM_YYYY_HH_MM = new SimpleDateFormat(
 			dfDate_DD_MM_YYYY_HH_MM_PATTERN);
-
 
 	public static final Calendar stringToCalendar(String string) {
 		Calendar c1 = null;
@@ -195,7 +194,7 @@ public class Helper {
 			}
 		}
 		if (c1 == null) {
-			Schueler.log.log(Level.WARNING, "No Data or Datestring:" + string
+			Schueler.log.log(Level.FINE, "No Data or Datestring:" + string
 					+ " doesnt match format");
 		}
 		return c1;
@@ -243,30 +242,66 @@ public class Helper {
 	}
 
 	/**
-	 * @param calendar 
+	 * @param calendar
 	 * @return
 	 */
 	public static String formatDatumStandard(Calendar calendar) {
-		if (calendar!= null)
-		{
+		if (calendar != null) {
 			return dfDateDD_MM_YYYY.format(calendar.getTime());
 		}
 		return Helper.EMPTY_STRING;
 	}
 
 	public static String formatBoolean(boolean schulpflicht) {
-		if (schulpflicht)
-		{
+		if (schulpflicht) {
 			return Helper.J;
-		}
-		else
-		{
+		} else {
 			return Helper.N;
 		}
 	}
 
-	public static boolean isNoValue(String str)
-	{
+	public static boolean isNoValue(String str) {
 		return (str == null || str.isEmpty());
+	}
+
+	public static String klassenKonvrter(String klasse) {
+		String nklasse = klasse;
+		Map<String, String> map = getKlassMap(); 
+		for(Map.Entry<String, String> e : map.entrySet())
+		{
+			if (nklasse.equals(e.getKey()))
+			{
+				nklasse = e.getValue();
+				log.info("Klassenkonvertierung:"+e.getKey()+" nach "+e.getValue()+"   ergibt:"+nklasse);
+				continue;
+			}
+		}
+
+		return nklasse;
+	}
+
+	private static Map<String, String> getKlassMap() {
+		// TODO als Property oder in db
+		Map<String, String> kmap = new HashMap<String, String>();
+
+		kmap.put("1KB3S", "1KB3V");
+		kmap.put("1KB3", "1KB3V");
+		kmap.put("2VF1W", "2VF1");
+		kmap.put("1BA1W", "1BA1");
+		kmap.put("2TK1W", "2TK1");
+		kmap.put("1EFKI", "1EF");
+		kmap.put("2VF2S", "2VF2");
+		kmap.put("1KB3W", "1KB3");
+		kmap.put("1VF2S", "1VF2");
+		kmap.put("2KK2W", "2KK2");
+		kmap.put("1VF1W", "1VF1");
+		kmap.put("1EFKG", "1EF");
+		kmap.put("1VF2W", "1VF2");
+		kmap.put("1LO1W", "1LO1");
+		kmap.put("1LO2W", "1LO2");
+		kmap.put("1VF1S", "1VF1");
+		kmap.put("2KK1W", "2KK1");
+
+		return kmap;
 	}
 }

@@ -46,6 +46,8 @@ public abstract class LeserSchuelerXLS extends AbstractLeser {
 
 		// pen File
 		String fileName = einstellungen.getProperty(WUProperties.ImportFileName);
+		String sheetNoStr = einstellungen.getProperty(WUProperties.SheetNummer);
+		int sheetNo = Integer.parseInt(sheetNoStr);
 		log.log(Level.INFO,"File to open:"+fileName);
 		
 		List<Schueler> result = new java.util.LinkedList<Schueler>();
@@ -54,7 +56,8 @@ public abstract class LeserSchuelerXLS extends AbstractLeser {
 			FileInputStream inp = new FileInputStream(fileName);
 			log.log(Level.INFO,"InputStream open with Bytes="+inp.available());
 			// Daten lesen
-			 handleFile(inp,result);
+			
+			 handleFile(inp,result,sheetNo);
 			// File schliessen
 			inp.close();
 		} catch (FileNotFoundException e) {
@@ -75,14 +78,15 @@ public abstract class LeserSchuelerXLS extends AbstractLeser {
 	/**
 	 * @param inp
 	 * @param result 
+	 * @param sheetNo 
 	 * @return 
 	 * @throws IOException
 	 * @throws InvalidFormatException
 	 */
-	private void handleFile(InputStream inp, List<Schueler> result) throws IOException,
+	private void handleFile(InputStream inp, List<Schueler> result, int sheetNo) throws IOException,
 			InvalidFormatException {
 		Workbook wb = WorkbookFactory.create(inp);
-		Sheet sheet1 = wb.getSheetAt(1);
+		Sheet sheet1 = wb.getSheetAt(sheetNo-1);
 		checkHeader(sheet1);
 		leseDaten(sheet1, result);
 	}
@@ -102,14 +106,22 @@ public abstract class LeserSchuelerXLS extends AbstractLeser {
 	 * @return 
 	 */
 	private void leseDaten(Sheet sheet1, List<Schueler> result) {
+		int c = 0;
 		for (int i = sheet1.getTopRow() + 1; i <= sheet1.getLastRowNum(); i++) {
-			log.log(Level.INFO, "Handle row:"+i);
+			c++;
+			log.log(Level.FINE, "Handle row:"+i);
 			Row row = sheet1.getRow(i);
 			Schueler element = leseZeile(row);
 			
-			log.log(Level.INFO, "Add to list:"+element);	
+			log.log(Level.FINE, "Row:"+i+" Add to list:"+element);	
 			result.add(element);
 		}
+		log.info("=====================================================================================================================================");
+		log.info("=====================================================================================================================================");
+		log.info("Zeieln in File:"+sheet1.getLastRowNum() + "-----------"+"Behandelte Zeilen:"+c  + "-----------"+"Erzeugte Elemente:"+result.size());
+		log.info("=====================================================================================================================================");
+		log.info("=====================================================================================================================================");
+		
 	}
 
 	/**
@@ -120,7 +132,7 @@ public abstract class LeserSchuelerXLS extends AbstractLeser {
 		Schueler element = new Schueler();
 		element.setDefaultValues();	
 	
-		log.log(Level.INFO, "Extracting cells:"+row.getRowNum());	
+		log.log(Level.FINE, "Extracting cells:"+row.getRowNum());	
 		// durchlaufe die Zeile und extrahiere die relevanten zellen 
 		String strValue;
 		// Schluesselextern
@@ -148,7 +160,10 @@ public abstract class LeserSchuelerXLS extends AbstractLeser {
 		element.setStrasse(strValue);
 		// Klasse
 		strValue = leseStringZelle(row, SpaltenToken.Klasse);
-		element.setKlasse(strValue);
+		// TODO: nur erlaubt Klassen - prüfe gegen eine Liste von Klassen -
+		// konvertiere in WebUntis Klassen (ALias) gegenüber Sekretariatsklassen
+		String nklasse = Helper.klassenKonvrter(strValue);
+		element.setKlasse(nklasse);
 		// Eintrittsdatum
 		strValue = leseStringZelle(row, SpaltenToken.DatumEinschulung);
 		element.setEintrittsdatum(strValue);
@@ -176,7 +191,7 @@ public abstract class LeserSchuelerXLS extends AbstractLeser {
 		String strValue="";
 		int cellno = this.getMapping().get(cellToken).getSpaltenNummer();
 		Cell cell = row.getCell(cellno);
-		log.log(Level.INFO, "Cell:"+cell);	
+		log.log(Level.FINE, "Cell:"+cell);	
 		if(isValid(cell))
 		{
 			strValue = cell.getStringCellValue();
