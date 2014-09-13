@@ -11,6 +11,7 @@ import de.weg.WebUntis.converter.ausdrucke.ExportZuPassword;
 import de.weg.WebUntis.converter.schueler.LeserSchuelerFactory;
 import de.weg.WebUntis.converter.schueler.BearbeiterSchueler;
 import de.weg.WebUntis.converter.schueler.SchreiberSchuelerCSV;
+import de.weg.WebUntis.converter.schueler.SchreiberUserCSV;
 import de.weg.WebUntis.resources.WUProperties;
 
 public class ImportSchuelerStart {
@@ -31,9 +32,12 @@ public class ImportSchuelerStart {
 			Bearbeiter bearbeiter = new BearbeiterSchueler();
 			bearbeiter.bearbeite(schueler);
 
-			// export
-			Schreiber schreiber = new SchreiberSchuelerCSV();
-			schreiber.exportData(einstellung, schueler);
+			// export stammdaten
+			Schreiber schreiberStamm = new SchreiberSchuelerCSV();
+			schreiberStamm.exportData(einstellung, schueler);
+			// export user
+			Schreiber schreiberUser = new SchreiberUserCSV();
+			schreiberUser.exportData(einstellung, schueler);
 		}
 		
 		List<Properties> einstellungen = ExportZuPassword.getFileList();

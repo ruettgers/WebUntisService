@@ -1,6 +1,5 @@
 package de.weg.WebUntis.converter.schueler;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -46,7 +45,7 @@ public class SchreiberSchuelerCSV extends AbstractSchreiber {
 	}
 
 	protected Writer erzeugeWriter(Properties einstellungen) throws IOException {
-		String fileName = einstellungen.getProperty(WUProperties.ExportFileName);
+		String fileName = einstellungen.getProperty(WUProperties.StammdatenFile);
 		File file = new File(fileName);
 		String encoding = einstellungen.getProperty(WUProperties.ExportFileEncoding);
 
@@ -90,7 +89,7 @@ public class SchreiberSchuelerCSV extends AbstractSchreiber {
 
 			}
 			log.info("=====================================================================================================================================");
-			log.info("=====================================================================================================================================");
+			log.info("===============================================                STAMMDATEN              ==============================================");
 			log.info("Liste umfasste:" + data.size()  + "-----------"+"Geschrieben Elemente:"+c+ "-----------"+"Fehlerhaft Elemente:"+e);
 			log.info("=====================================================================================================================================");
 			log.info("=====================================================================================================================================");

@@ -45,7 +45,7 @@ public abstract class LeserSchuelerXLS extends AbstractLeser {
 	public List<?> loadData(Properties einstellungen) {
 
 		// pen File
-		String fileName = einstellungen.getProperty(WUProperties.ImportFileName);
+		String fileName = einstellungen.getProperty(WUProperties.ImportFile);
 		String sheetNoStr = einstellungen.getProperty(WUProperties.SheetNummer);
 		int sheetNo = Integer.parseInt(sheetNoStr);
 		log.log(Level.INFO,"File to open:"+fileName);
@@ -168,8 +168,8 @@ public abstract class LeserSchuelerXLS extends AbstractLeser {
 		strValue = leseStringZelle(row, SpaltenToken.DatumEinschulung);
 		element.setEintrittsdatum(strValue);
 		// Austrittsdatum
-		//strValue = leseStringZelle(row, SchuelerMappingSPlan.AUSTRITTSDATUM);
-		element.setAustrittsdatum("");
+		strValue = leseStringZelle(row, SpaltenToken.DatumEntlassung);
+		element.setAustrittsdatum(strValue);
 		// Text = Religion
 		strValue = leseStringZelle(row, SpaltenToken.Konfession);
 		element.setText(strValue);
@@ -177,6 +177,8 @@ public abstract class LeserSchuelerXLS extends AbstractLeser {
 		// errechnen
 		//strValue = leseStringZelle(row, SchuelerMappingSPlan.VOLLJAEHRIG);
 		//element.setVolljaehrig( Helper.isBooleanString(strValue) );
+		strValue = leseStringZelle(row, SpaltenToken.EMail);
+		element.setEMail(strValue);
 	
 		return element;
 	}

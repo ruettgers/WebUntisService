@@ -44,28 +44,7 @@ public class ExportZuPassword {
 
 	public static List<Properties> getFileList() {
 
-		List<Properties> propertyList = new ArrayList<Properties>();
-		// String filedir =
-		// "P:/Data/workspace/webtools/WebUntis-ImportKonverter";
-		String filedir = ".";
-		String filedirim = filedir
-				+ "/"
-				+ WUProperties.getInstance().getProperty(
-						WUProperties.Default_FileDirExport);
-		String filedirex = filedir
-				+ "/"
-				+ WUProperties.getInstance().getProperty(
-						WUProperties.Default_FileDirExport);
-
-		Properties p;
-		p = new Properties();
-		p.put(WUProperties.ImportFileName, filedirim + "/" + WUProperties.getInstance().getProperty(WUProperties.ExportFileName));
-		p.put(WUProperties.ExportFileName, filedirex + "/" + WUProperties.getInstance().getProperty(WUProperties.PasswordFileNameName));
-		propertyList.add(p);
-		
-		
-
-		return propertyList;
+		return WUProperties.getPropertyList();
 	}
 
 	public static List<?> leseDaten(Properties einstellungen) {
@@ -74,7 +53,7 @@ public class ExportZuPassword {
 		// Open File
 
 		String fileName = einstellungen
-				.getProperty(WUProperties.ImportFileName);
+				.getProperty(WUProperties.StammdatenFile);
 
 		BufferedReader br = null;
 		try {
@@ -192,7 +171,8 @@ public class ExportZuPassword {
 
 	/**
 	 * @param row
-	 * @param SpalteWU.getMapping().get(familienname).g
+	 * @param SpalteWU
+	 *            .getMapping().get(familienname).g
 	 * @return
 	 */
 	private static String leseStringZelle(String[] line, SpaltenToken token) {
@@ -202,13 +182,18 @@ public class ExportZuPassword {
 		return strValue;
 	}
 
-
-	private static Font kopfFont = new Font(Font.FontFamily.TIMES_ROMAN, 14,Font.BOLD);
-	private static Font redFont = new Font(Font.FontFamily.TIMES_ROMAN, 15,Font.BOLD);
-	private static Font textFont = new Font(Font.FontFamily.TIMES_ROMAN, 12,	Font.NORMAL);
-	private static Font textBold = new Font(Font.FontFamily.TIMES_ROMAN, 12,	Font.UNDERLINE);
-	private static Font benutzerFont = new Font(Font.FontFamily.TIMES_ROMAN, 14,Font.BOLDITALIC);
-	private static Font passwortFont = new Font(Font.FontFamily.TIMES_ROMAN, 12,Font.ITALIC);
+	private static Font kopfFont = new Font(Font.FontFamily.TIMES_ROMAN, 14,
+			Font.BOLD);
+	private static Font redFont = new Font(Font.FontFamily.TIMES_ROMAN, 15,
+			Font.BOLD);
+	private static Font textFont = new Font(Font.FontFamily.TIMES_ROMAN, 12,
+			Font.NORMAL);
+	private static Font textBold = new Font(Font.FontFamily.TIMES_ROMAN, 12,
+			Font.UNDERLINE);
+	private static Font benutzerFont = new Font(Font.FontFamily.TIMES_ROMAN,
+			14, Font.BOLDITALIC);
+	private static Font passwortFont = new Font(Font.FontFamily.TIMES_ROMAN,
+			12, Font.ITALIC);
 
 	public static void schreibeDaten(Properties einstellungen,
 			List<?> schuelerliste) {
@@ -235,7 +220,7 @@ public class ExportZuPassword {
 	protected static Document erzeugeWriter(Properties einstellungen)
 			throws IOException, DocumentException {
 		String fileName = einstellungen
-				.getProperty(WUProperties.ExportFileName);
+				.getProperty(WUProperties.PasswordFile);
 		File file = new File(fileName);
 
 		log.info("File:open:" + file.getAbsolutePath());
@@ -261,67 +246,87 @@ public class ExportZuPassword {
 						+ obj);
 				continue;
 			}
-			// Text
-			schreibeHeader(pdf, data);
-			// Schuelerdaten
-			schreibeSchueler((Schueler) obj,pdf);
-			// Abschluss der Zeile
-			schreibeDocumentenAbschluss(pdf);
-
+			// nur falls auch kennwort erzeugt wurde.
+			Schueler schueler = (Schueler) obj;
+			if (schueler.hasPassword()) {
+				// Text
+				schreibeHeader(pdf, data);
+				// Schuelerdaten
+				schreibeSchueler(schueler, pdf);
+				// Abschluss der Zeile
+				schreibeDocumentenAbschluss(pdf);
+			}
 		}
 
 	}
 
 	private static void schreibeDocumentenAbschluss(Document pdf) {
-	    pdf.newPage();
-		
+		pdf.newPage();
+
 	}
 
 	private static void schreibeHeader(Document document, List<?> data)
 			throws IOException, DocumentException {
-		
-		//Metadaten
-		  document.addTitle("WebUntisAccount am WEG");
-		    document.addSubject("Daten zum WebUntisAccount am WEG");
-		    document.addKeywords("WebUntis, WEG");
-		    document.addAuthor("webuntis@weg-freiburg.de");
-		    document.addCreator("Rü");
-		    
-		    // Einführungstext
-		    Paragraph preface = new Paragraph();
-		    // We add one empty line
-		    addEmptyLine(preface, 1);
-		    // Lets write a big header
-		    preface.add(new Paragraph("Anmeldaten zum WebUntisAccount am WEG vom "  + Helper.dfDateDD_MM_YYYY_HH_MM.format(new Date()), kopfFont));
-		    addEmptyLine(preface, 2);
-		    preface.add(new Paragraph("WICHTIG:Kennwort nach der Anmeldung in WebUntis unbedingt ändern!",
-			        redFont));
-		    preface.add(new Paragraph("Die Anleitung dazu finden Sie im seperaten Handzettel.",textFont));
-		    addEmptyLine(preface, 1);
-			
-		    document.add(preface);
-		    
+
+		// Metadaten
+		document.addTitle("WebUntisAccount am WEG");
+		document.addSubject("Daten zum WebUntisAccount am WEG");
+		document.addKeywords("WebUntis, WEG");
+		document.addAuthor("webuntis@weg-freiburg.de");
+		document.addCreator("Rü");
+
+		// Einführungstext
+		Paragraph preface = new Paragraph();
+		// We add one empty line
+		addEmptyLine(preface, 1);
+		// Lets write a big header
+		preface.add(new Paragraph("Anmeldaten zum WebUntisAccount am WEG vom "
+				+ Helper.dfDateDD_MM_YYYY_HH_MM.format(new Date()), kopfFont));
+		addEmptyLine(preface, 2);
+		preface.add(new Paragraph(
+				"WICHTIG:Kennwort nach der Anmeldung in WebUntis unbedingt ändern!",
+				redFont));
+		preface.add(new Paragraph(
+				"Die Anleitung dazu finden Sie im seperaten Handzettel.",
+				textFont));
+		addEmptyLine(preface, 1);
+		preface.add(new Paragraph(
+				"via Web-Browser: Google: WebUntis WEG Freiburg.", textFont));
+		preface.add(new Paragraph(
+				"oder Link: https://terpsichore.webuntis.com/WebUntis/index.do?school=WEGym-Freiburg#main",
+				textFont));
+		preface.add(new Paragraph(
+				"oder via App: UntisApp  Schulname:WEGym-Freiburg", textFont));
+		addEmptyLine(preface, 1);
+
+		document.add(preface);
+
 	}
 
 	private static void schreibeSchueler(Schueler sch, Document pdf)
 			throws IOException, DocumentException {
 		log.fine("Schueler daten schreiben");
-	    Paragraph schueler = new Paragraph();
-	    schueler.add(new Paragraph("Benutzername:"+ sch.getKurzname(), benutzerFont));
-	    schueler.add(new Paragraph("Kennwort:"+ sch.getPasswort(), passwortFont));
-	    addEmptyLine(schueler, 1);
-	    schueler.add(new Paragraph("Ihre persönlichen Daten zur Überprüfung:", textBold));
-	    schueler.add(new Paragraph(sch.getVorname() + " "+sch.getFamilienname(), textFont));
-	    schueler.add(new Paragraph(sch.getPLZ() + " "+sch.getStadt(), textFont));
-	    schueler.add(new Paragraph(sch.getStrasse(), textFont));
-	    schueler.add(new Paragraph("Geburtsdatum:"+schreibeCalendar(sch.getGeburtsdatum()), textFont));
-	    schueler.add(new Paragraph("Klasse:"+sch.getKlasse(), textFont));
-	    
-	    pdf.add(schueler);
+		Paragraph schueler = new Paragraph();
+		schueler.add(new Paragraph("Benutzername:" + sch.getKurzname(),
+				benutzerFont));
+		schueler.add(new Paragraph("Kennwort:" + sch.getPasswort(),
+				passwortFont));
+		addEmptyLine(schueler, 1);
+		schueler.add(new Paragraph("Ihre persönlichen Daten zur Überprüfung:",
+				textBold));
+		schueler.add(new Paragraph(sch.getVorname() + " "
+				+ sch.getFamilienname(), textFont));
+		schueler.add(new Paragraph(sch.getPLZ() + " " + sch.getStadt(),
+				textFont));
+		schueler.add(new Paragraph(sch.getStrasse(), textFont));
+		schueler.add(new Paragraph("Geburtsdatum:"
+				+ schreibeCalendar(sch.getGeburtsdatum()), textFont));
+		schueler.add(new Paragraph("Klasse:" + sch.getKlasse(), textFont));
+
+		pdf.add(schueler);
 	}
 
-	private static String schreibeCalendar(Calendar calendar)
-			 {
+	private static String schreibeCalendar(Calendar calendar) {
 		String strV = "";
 		if (calendar != null) {
 			strV = Helper.dfDateDD_MM_YYYY.format(calendar.getTime());
@@ -329,10 +334,9 @@ public class ExportZuPassword {
 		return strV;
 	}
 
-
-	  private static void addEmptyLine(Paragraph paragraph, int number) {
-		    for (int i = 0; i < number; i++) {
-		      paragraph.add(new Paragraph(" "));
-		    }
-		  }
+	private static void addEmptyLine(Paragraph paragraph, int number) {
+		for (int i = 0; i < number; i++) {
+			paragraph.add(new Paragraph(" "));
+		}
+	}
 }

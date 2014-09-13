@@ -23,13 +23,25 @@ public class WUProperties extends Properties {
 	public static final String Default_FileDirImport = "FileDirImport";
 	public static final String Default_FileDirExport = "FileDirExport";
 	public static final String ImportFileName = "ImportFileName";
-	public static final String ExportFileName = "ExportFileName";
+	public static final String ImportExtension = "ImportExtension";
+	public static final String StammdatenTail = "StammdatenTail";
+	public static final String UserTail = "UserTail";
+	public static final String PasswordTail = "PasswordTail";
+//	public static final String ExportFileName = "ExportFileName";
 	public static final String MappingArt = "MappingArt";
 //	public static final String TokenMappingFile = "TokenMappingFile";
-	public static final String PasswordFileNameName = "PasswordFileName";
+//	public static final String PasswordFileNameName = "PasswordFileName";
 	public static final String ExportFileEncoding = "ExportFileEncoding";
 	public static final String SheetNummer = "SheetNummer";
 
+	// Erzeugen
+	public static final String ImportFile = "ImportFile";
+	public static final String StammdatenFile = "StammdatenFile";
+	public static final String UserFile = "UserFile";
+	public static final String PasswordFile = "PasswordFile";
+
+	
+	
 	// singleton instance
 	/**
 	 * @uml.property name="me"
@@ -81,10 +93,14 @@ public class WUProperties extends Properties {
 
 		String filedir = ".";
 		String filedirim = filedir+"/"+WUProperties.getInstance().getProperty(WUProperties.Default_FileDirImport);
-		p.put(WUProperties.ImportFileName, filedirim+"/"+WUProperties.getInstance().getProperty(WUProperties.ImportFileName));
+		p.put(WUProperties.ImportFile, filedirim+"/"+WUProperties.getInstance().getProperty(WUProperties.ImportFileName)+"."+WUProperties.getInstance().getProperty(WUProperties.ImportExtension));
 
-		String filedirex = filedir+"/"+WUProperties.getInstance().getProperty(WUProperties.Default_FileDirExport);
-		p.put(WUProperties.ExportFileName, filedirex+"/"+WUProperties.getInstance().getProperty(WUProperties.ExportFileName));
+		String filedirstamm = filedir+"/"+WUProperties.getInstance().getProperty(WUProperties.Default_FileDirExport);
+		p.put(WUProperties.StammdatenFile, filedirstamm+"/"+WUProperties.getInstance().getProperty(WUProperties.ImportFileName)+WUProperties.getInstance().getProperty(WUProperties.StammdatenTail));
+		String filediruser = filedir+"/"+WUProperties.getInstance().getProperty(WUProperties.Default_FileDirExport);
+		p.put(WUProperties.UserFile, filediruser+"/"+WUProperties.getInstance().getProperty(WUProperties.ImportFileName)+WUProperties.getInstance().getProperty(WUProperties.UserTail));
+		String filedirpw = filedir+"/"+WUProperties.getInstance().getProperty(WUProperties.Default_FileDirExport);
+		p.put(WUProperties.PasswordFile, filedirpw+"/"+WUProperties.getInstance().getProperty(WUProperties.ImportFileName)+WUProperties.getInstance().getProperty(WUProperties.PasswordTail));
 		
 //		String mappingFile = "/"+WUProperties.getInstance().getProperty(WUProperties.TokenMappingFile);
 //		p.put(WUProperties.TokenMappingFile, mappingFile);

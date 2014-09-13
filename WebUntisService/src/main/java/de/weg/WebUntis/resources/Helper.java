@@ -284,6 +284,38 @@ public class Helper {
 		// TODO als Property oder in db
 		Map<String, String> kmap = new HashMap<String, String>();
 
+		kmap.put("BKI/1", "BKI1");
+		kmap.put("BKI/2", "BKI2");
+		kmap.put("BKI/3", "BKI3");
+		kmap.put("BKII1", "BKII1");
+		kmap.put("BKII2", "BKII2");
+		kmap.put("FH1", "FH1");
+		kmap.put("FH2", "FH2");
+		kmap.put("W1/1", "W1-1");
+		kmap.put("W1/2", "W1-2");
+		kmap.put("W2/1", "W2-1");
+		kmap.put("W2/2", "W2-2");
+		kmap.put("W2/3", "W2-3");
+		kmap.put("WAG 10", "G10");
+		kmap.put("WAG 8", "G8");
+		kmap.put("WAG 9", "G9");
+		kmap.put("WG 11/1", "11-1");
+		kmap.put("WG 11/2", "11-2");
+		kmap.put("WG 11/3", "11-3");
+		kmap.put("WG 11/4", "11-4");
+		kmap.put("WG 11/5", "11-5");
+		kmap.put("WG 12/1", "12-1");
+		kmap.put("WG 12/2", "12-2");
+		kmap.put("WG 12/3", "12-3");
+		kmap.put("WG 12/4", "12-4");
+		kmap.put("WG 12/5", "12-5");
+		kmap.put("WG 13/1", "13-1");
+		kmap.put("WG 13/2", "13-2");
+		kmap.put("WG 13/3", "13-3");
+		kmap.put("WG 13/4", "13-4");
+		kmap.put("WG 13/5", "13-5");
+		
+		
 		kmap.put("1KB3S", "1KB3V");
 		kmap.put("1KB3", "1KB3V");
 		kmap.put("2VF1W", "2VF1");

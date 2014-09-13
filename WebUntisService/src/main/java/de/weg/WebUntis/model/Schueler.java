@@ -5,6 +5,7 @@ import java.util.GregorianCalendar;
 import java.util.logging.Logger;
 
 import de.weg.WebUntis.converter.ausdrucke.PasswordGenerator;
+import de.weg.WebUntis.db.Users;
 import de.weg.WebUntis.db.UsersCache;
 import de.weg.WebUntis.resources.Helper;
 
@@ -81,6 +82,11 @@ public class Schueler implements Comparable<Schueler> {
 		}
 		return true;
 	}
+	
+	public boolean hasPassword()
+	{
+		return (!(this.getPasswort() == null || this.getPasswort().isEmpty()));
+	}
 
 	public void setDefaultValues() {
 		this.setAktiv(true);
@@ -102,17 +108,69 @@ public class Schueler implements Comparable<Schueler> {
 
 		}
 		if (this.getPasswort() == null || this.getPasswort().isEmpty()) {
-			this.setPasswort(PasswordGenerator.generate(8,
-					PasswordGenerator.alphabet));
+			generierePasswort();
 		}
 	}
 
+	
+	private String getUserKeyStr()
+	{
+		String str = Helper.EMPTY_STRING;
+		String extKeyStr = this.getSchluesselExtern();
+		UsersCache uc = UsersCache.getInstance();
+		if (uc.containsExtKey(extKeyStr)) {
+			str = getFromUserDB(extKeyStr, uc);
+		}
+		return str;
+	}
+	private boolean hasNoUser()
+	{
+		return getUserKeyStr().isEmpty();
+	}
+	
+	private void generierePasswort() {
+		if (this.hasNoUser())
+		{
+		this.setPasswort(PasswordGenerator.generate(8,
+				PasswordGenerator.alphabet));
+		}
+		else
+		{
+			this.setPasswort(Helper.EMPTY_STRING);
+		}
+
+		
+	}
+
 	private void generiereBenutzername() {
-		
+
+		String kn = "";
+
+		// Prüfe, ob zum Schueler schon ein Benutzer angelegt ist.
+		// Notwendig: schueler.schluesselExtern (SVP) ist identisch mit
+		// user.Personalname (darin wird der SVP-Schluessel in WebUntis von uns
+		// gespeichert bzw. uebernommen)
+		String extKeyStr = this.getSchluesselExtern();
+		UsersCache uc = UsersCache.getInstance();
+		if (uc.containsExtKey(extKeyStr)) {
+			kn = getFromUserDB(extKeyStr, uc);
+		}
+		else
+		{
+			// sonst generieren
+			kn = selbstGenerieren(uc);
+		}
+		uc.insertDummyName(kn);
+		this.setKurzname(kn);
+
+	}
+
+	private String selbstGenerieren(UsersCache uc) {
+		String kn;
 		// Standardversuch
-		String kn = Helper.userNameGenerator(this.getFamilienname(),
-				this.getVorname());
-		
+		kn = Helper
+				.userNameGenerator(this.getFamilienname(), this.getVorname());
+
 		// Prüfe auf Sonderzeichen, leerZeichen und so weiter:
 		if (!Helper.userNameIsValid(kn)) {
 			log.warning("ACHTUNG: Benutzername " + kn
@@ -129,27 +187,28 @@ public class Schueler implements Comparable<Schueler> {
 			kn = knneu;
 
 		}
-		
-		// Prüfe, ob der Name schon verhanden ist und erzeuge gegebenefalls einen neuen Namen, diesen in den Namenscach einordnen für weitere folgende Versuche
+
 		int startExtension = 2;
 		int i = startExtension;
 		String nkn = kn;
-		UsersCache uc = UsersCache.getInstance();
-		while (uc.containsName(nkn))
-		{
+		while (uc.containsName(nkn)) {
 			nkn = kn + i;
 			i++;
 		}
-		if (i>startExtension)
-		{
-			this.addBemerkung("StandardName bereits vorhanden. Neuer Name:"+nkn);
+		if (i > startExtension) {
+			this.addBemerkung("StandardName bereits vorhanden. Neuer Name:"
+					+ nkn);
 		}
-
-		uc.insertDummyName(nkn);
-
-		this.setKurzname(nkn);
+		kn = nkn;
+		return kn;
 	}
 
+	private String getFromUserDB(String extKeyStr, UsersCache uc) {
+		String kn;
+		Users user = uc.getUserByExtKey(extKeyStr);
+		kn = user.getName();
+		return kn;
+	}
 
 	private String bemerkung;
 
@@ -161,6 +220,7 @@ public class Schueler implements Comparable<Schueler> {
 	public String getBemerkung() {
 		return this.bemerkung;
 	}
+
 	private void addBemerkung(String neuerTeil) {
 		String bemerkung = this.getBemerkung();
 		if (bemerkung == null) {
